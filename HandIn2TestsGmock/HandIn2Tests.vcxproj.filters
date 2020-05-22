@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="test-app-controller.cpp" />
+    <ClCompile Include="test-lora-driver.cpp" />
+    <ClCompile Include="test-temperature-driver.cpp" />
+    <ClCompile Include="TestSuiteAppController_unittest.cpp">
+      <Filter>app-controller</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\lib\native\src\gtest\gtest-all.cc" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\lib\native\src\gmock\gmock-all.cc" />
+    <ClCompile Include="test_co2_driver_with_gmock.cpp">
+      <Filter>co2-driver</Filter>
+    </ClCompile>
+    <ClCompile Include="..\HandIn2\AppController.c">
+      <Filter>app-controller</Filter>
+    </ClCompile>
+    <ClCompile Include="FreeRTOS_mock.cpp">
+      <Filter>mocks\FreeRTOS</Filter>
+    </ClCompile>
+    <ClCompile Include="mock-lora-driver.cpp">
+      <Filter>mocks\lora-driver</Filter>
+    </ClCompile>
+    <ClCompile Include="mock-temperature-driver.cpp">
+      <Filter>mocks\temperature-driver</Filter>
+    </ClCompile>
+    <ClCompile Include="mock-co2-driver.cpp">
+      <Filter>mocks\co2-driver</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="co2-driver">
+      <UniqueIdentifier>{0d55d941-ddd9-4b62-bf4b-28f91638bd20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="app-controller">
+      <UniqueIdentifier>{5db2e045-ffb1-4c21-8d5e-f0b5538be978}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lora-driver">
+      <UniqueIdentifier>{c08ae8a6-0e4f-4afd-9c4e-742053009c62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="temperature-driver">
+      <UniqueIdentifier>{cf60bd51-9511-4e8b-833e-3252fd4b206a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mocks">
+      <UniqueIdentifier>{b72e5c64-385d-403e-a12e-30deedbf140e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mocks\temperature-driver">
+      <UniqueIdentifier>{09b01872-a61e-4599-97aa-29050cb4a6af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mocks\lora-driver">
+      <UniqueIdentifier>{ed4b7d3a-91cb-4f6e-b1b1-13824e143af4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mocks\FreeRTOS">
+      <UniqueIdentifier>{c5cecdf1-54e1-4f74-874a-d8d47752d459}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mocks\co2-driver">
+      <UniqueIdentifier>{2448a69f-637d-4245-87b0-3708521ced40}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="..\HandIn2\AppController.h">
+      <Filter>app-controller</Filter>
+    </ClInclude>
+    <ClInclude Include="FreeRTOS_mock.hpp">
+      <Filter>mocks\FreeRTOS</Filter>
+    </ClInclude>
+    <ClInclude Include="mock-lora-driver.hpp">
+      <Filter>mocks\lora-driver</Filter>
+    </ClInclude>
+    <ClInclude Include="mock-temperature-driver.hpp">
+      <Filter>mocks\temperature-driver</Filter>
+    </ClInclude>
+    <ClInclude Include="mock-co2-driver.hpp">
+      <Filter>mocks\co2-driver</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="HandIn2Tests.rc" />
+  </ItemGroup>
+</Project>
