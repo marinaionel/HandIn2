@@ -9,7 +9,7 @@
 
 #include "AppController.h"
 #include "co2driver.h"
-#include "lora_driver.h"
+#include "loraDriver.h"
 #include "temperatureDriver.h"
 #include "constants.h"
 

@@ -1,69 +1,10 @@
-#include <fff.h>
-#include <iso646.h>
-#include <gtest/gtest.h>
-DEFINE_FFF_GLOBALS
+#include "setup-fff.hpp"
 
 extern "C" {
-#include <FreeRTOS.h>
-#include <queue.h>
-#include <event_groups.h>
-#include "../HandIn2/co2driver.h"
 #include "../HandIn2/constants.h"
 }
 
-FAKE_VALUE_FUNC1(void*, pvPortMalloc, size_t)
-FAKE_VALUE_FUNC6(BaseType_t, xTaskCreate, TaskFunction_t, const char*, configSTACK_DEPTH_TYPE, void*, UBaseType_t, TaskHandle_t*)
-FAKE_VALUE_FUNC2(BaseType_t, xQueueSemaphoreTake, QueueHandle_t, TickType_t)
-FAKE_VALUE_FUNC4(portBASE_TYPE, xQueueGenericSend, xQueueHandle, const void*, portTickType, portBASE_TYPE)
-FAKE_VALUE_FUNC5(EventBits_t, xEventGroupWaitBits, EventGroupHandle_t, EventBits_t, BaseType_t, BaseType_t, TickType_t)
-FAKE_VALUE_FUNC2(EventBits_t, xEventGroupSetBits, EventGroupHandle_t, EventBits_t)
-FAKE_VOID_FUNC1(vTaskDelete, TaskHandle_t)
-FAKE_VOID_FUNC1(vPortFree, void*);
-
-class Co2DriverTest : public::testing::Test
-{
-protected:
-	void SetUp() override
-	{
-		RESET_FAKE(pvPortMalloc);
-		RESET_FAKE(xTaskCreate);
-		RESET_FAKE(xQueueSemaphoreTake);
-		RESET_FAKE(xQueueGenericSend);
-		RESET_FAKE(xEventGroupWaitBits);
-		RESET_FAKE(xEventGroupSetBits);
-		RESET_FAKE(vTaskDelete);
-		RESET_FAKE(vPortFree);
-		FFF_RESET_HISTORY();
-	}
-	void TearDown() override {}
-};
-
-class Co2DriverTest1 : public::testing::Test
-{
-public:
-	Co2Driver_t co2driver;
-protected:
-	void SetUp() override
-	{
-		RESET_FAKE(pvPortMalloc);
-		RESET_FAKE(xTaskCreate);
-		RESET_FAKE(xQueueSemaphoreTake);
-		RESET_FAKE(xQueueGenericSend);
-		RESET_FAKE(xEventGroupWaitBits);
-		RESET_FAKE(xEventGroupSetBits);
-		RESET_FAKE(vTaskDelete);
-		RESET_FAKE(vPortFree);
-		FFF_RESET_HISTORY();
-
-		pvPortMalloc_fake.return_val = malloc(20);
-		co2driver = co2Driver_create(1, nullptr, nullptr, nullptr);
-	}
-	void TearDown() override
-	{
-		co2Driver_destroy(&co2driver);
-	}
-};
-
+//-------------------------------------TESTS CO2 DRIVER-------------------------------------------------------------------
 TEST_F(Co2DriverTest, TestCreate_calls_create_without_crashing)
 {
 	//act
@@ -186,7 +127,7 @@ TEST_F(Co2DriverTest1, TestGetCo2Ppm_returns_the_last_measurement_parameter_of_t
 	//act
 	auto _t = co2Driver_getCo2Ppm(co2driver);
 	//assert
-	EXPECT_TRUE(_t <= 5000 and _t >= 0);
+	EXPECT_TRUE(_t <= 5000 && _t >= 0);
 }
 
 TEST_F(Co2DriverTest1, TestTakeMeasuring_can_call_take_measuring_without_crashing)
@@ -217,31 +158,31 @@ TEST_F(Co2DriverTest1, TestTakeMeasuring_generates_a_new_random_value_for_last_m
 	//act
 	auto _t = co2Driver_getCo2Ppm(co2driver);
 	//assert
-	EXPECT_TRUE(_t <= 5000 and _t >= 0);
+	EXPECT_TRUE(_t <= 5000 && _t >= 0);
 	//act
 	_t = co2Driver_getCo2Ppm(co2driver);
 	//assert
-	EXPECT_TRUE(_t <= 5000 and _t >= 0);
+	EXPECT_TRUE(_t <= 5000 && _t >= 0);
 	//act
 	_t = co2Driver_getCo2Ppm(co2driver);
 	//assert
-	EXPECT_TRUE(_t <= 5000 and _t >= 0);
+	EXPECT_TRUE(_t <= 5000 && _t >= 0);
 	//act
 	_t = co2Driver_getCo2Ppm(co2driver);
 	//assert
-	EXPECT_TRUE(_t <= 5000 and _t >= 0);
+	EXPECT_TRUE(_t <= 5000 && _t >= 0);
 	//act
 	_t = co2Driver_getCo2Ppm(co2driver);
 	//assert
-	EXPECT_TRUE(_t <= 5000 and _t >= 0);
+	EXPECT_TRUE(_t <= 5000 && _t >= 0);
 	//act
 	_t = co2Driver_getCo2Ppm(co2driver);
 	//assert
-	EXPECT_TRUE(_t <= 5000 and _t >= 0);
+	EXPECT_TRUE(_t <= 5000 && _t >= 0);
 	//act
 	_t = co2Driver_getCo2Ppm(co2driver);
 	//assert
-	EXPECT_TRUE(_t <= 5000 and _t >= 0);
+	EXPECT_TRUE(_t <= 5000 && _t >= 0);
 }
 
 TEST_F(Co2DriverTest1, TestTakeMeasuring_returns_co_2_driver_ok_if_everything_went_ok)
@@ -284,3 +225,50 @@ TEST_F(Co2DriverTest1, TestInLoop_calls_take_measuring_after_a_valid_result)
 													   //the same number twice in a row
 }
 
+//-------------------------------------TESTS TEMPERATURE DRIVER-----------------------------------------------------------
+TEST_F(TemperatureDriverTest, TestCreate_calls_create_without_crashing)
+{
+	//act
+	temperatureDriver_create(1, NULL, NULL, NULL);
+}
+
+TEST_F(TemperatureDriverTest, TestCreate_callsMallocWithArgument20)
+{
+	//act
+	temperatureDriver_create(2, nullptr, nullptr, nullptr);
+	EXPECT_EQ(1u, pvPortMalloc_fake.call_count);
+	//assert
+	// sizeof(TemperatureDriver) = 20
+	EXPECT_EQ(20u, pvPortMalloc_fake.arg0_val);
+}
+
+TEST_F(TemperatureDriverTest, TestCreate_returned_co_2_driver_pointer_is_not_null)
+{
+	//arrange
+	pvPortMalloc_fake.return_val = malloc(20);
+	//act
+	TemperatureDriver_t _tmp = temperatureDriver_create(2, nullptr, nullptr, nullptr);
+	//assert
+	EXPECT_TRUE(NULL != _tmp);
+}
+
+TEST_F(TemperatureDriverTest, TestCreate_callsxTaskCreateWithTheRequiredArguments)
+{
+	//arrange
+	pvPortMalloc_fake.return_val = malloc(20);
+	//act
+	TemperatureDriver_t _temperatureDriver = temperatureDriver_create(2, nullptr, nullptr, nullptr);
+	//assert
+	EXPECT_EQ((TaskFunction_t)temperatureSensor_Task, xTaskCreate_fake.arg0_val);
+	EXPECT_EQ(0, strcmp("Temperature Task", xTaskCreate_fake.arg1_val));
+	EXPECT_EQ(configMINIMAL_STACK_SIZE, xTaskCreate_fake.arg2_val);
+	EXPECT_EQ(_temperatureDriver, TemperatureDriver_t(xTaskCreate_fake.arg3_val));
+	EXPECT_EQ(configMAX_PRIORITIES - 4, xTaskCreate_fake.arg4_val);
+	EXPECT_FALSE(NULL == xTaskCreate_fake.arg5_val);
+}
+
+TEST_F(TemperatureDriverTest1, TestCreate_has_last_measurement_as_0)
+{
+	//assert
+	EXPECT_EQ(0, temperatureDriver_getMeasure(temperature_driver));
+}

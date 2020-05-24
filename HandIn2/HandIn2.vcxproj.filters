@@ -35,9 +35,6 @@
     <ClCompile Include="temperatureDriver.c">
       <Filter>Source Files\drivers</Filter>
     </ClCompile>
-    <ClCompile Include="lora_driver.c">
-      <Filter>Source Files\drivers</Filter>
-    </ClCompile>
     <ClCompile Include="AppController.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -74,15 +71,15 @@
     <ClCompile Include="main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="loraDriver.c">
+      <Filter>Source Files\drivers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="co2driver.h">
       <Filter>Header Files\drivers</Filter>
     </ClInclude>
     <ClInclude Include="temperatureDriver.h">
-      <Filter>Header Files\drivers</Filter>
-    </ClInclude>
-    <ClInclude Include="lora_driver.h">
       <Filter>Header Files\drivers</Filter>
     </ClInclude>
     <ClInclude Include="AppController.h">
@@ -150,6 +147,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\..\..\..\c_libs\VIAFreeRTOS-Windows-master\FreeRTOSConfig.h">
       <Filter>FreeRTOS</Filter>
+    </ClInclude>
+    <ClInclude Include="loraDriver.h">
+      <Filter>Header Files\drivers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

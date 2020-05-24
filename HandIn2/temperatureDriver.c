@@ -45,7 +45,7 @@ static void inLoop(TemperatureDriver_t pDriver)
 	}
 }
 
-static void temperatureSensor_Task(void* pvParameters) {
+void temperatureSensor_Task(void* pvParameters) {
 	// avoid compiler warning about unused parameters
 	TemperatureDriver_t _passedDriver = (TemperatureDriver_t)pvParameters;
 
@@ -55,22 +55,9 @@ static void temperatureSensor_Task(void* pvParameters) {
 	vTaskDelete(_passedDriver->task_handle);
 }
 
-static void createTemperatureTask(TemperatureDriver_t driver)
-{
-	//Create tasks	
-
-	xTaskCreate(
-		temperatureSensor_Task						/* Task function. */
-		, (const portCHAR*)"Temperature Task"					/* String with name of task. */
-		, configMINIMAL_STACK_SIZE					/* Stack size in words. */
-		, (void*)driver								/* Parameter passed as input of the task */
-		, TEMPERATURE_TASK_PRIORITY		/* Priority of the task. */
-		, &(driver->task_handle));					/* Task handle. */
-}
-
 TemperatureDriver_t temperatureDriver_create(uint8_t pPortNo, EventGroupHandle_t measure_event_group_handle, EventGroupHandle_t new_data_event_group_handle, SemaphoreHandle_t pPrintfSemaphore)
 {
-	TemperatureDriver_t _t = calloc(1, sizeof(TemperatureDriver));
+	TemperatureDriver_t _t = pvPortMalloc(1 * sizeof(TemperatureDriver));
 	if (_t == NULL)return NULL;
 	_t->portNo = pPortNo;
 	_t->lastValue = 0;
@@ -78,7 +65,16 @@ TemperatureDriver_t temperatureDriver_create(uint8_t pPortNo, EventGroupHandle_t
 	_t->event_group_handle_measure = measure_event_group_handle;
 	_t->xPrintfSemaphore = pPrintfSemaphore;
 	_t->task_handle = NULL;
-	createTemperatureTask(_t);
+
+	//Create task
+	xTaskCreate(
+		temperatureSensor_Task						/* Task function. */
+		, (const portCHAR*)"Temperature Task"		/* String with name of task. */
+		, configMINIMAL_STACK_SIZE					/* Stack size in words. */
+		, (void*)_t								/* Parameter passed as input of the task */
+		, TEMPERATURE_TASK_PRIORITY		/* Priority of the task. */
+		, &_t->task_handle);					/* Task handle. */
+
 	return _t;
 }
 
@@ -95,16 +91,15 @@ TemperatureDriverReturnCode_t temperatureDriver_takeMeasuring(TemperatureDriver_
 	//rand() % (max_number + 1 - minimum_number) + minimum_number
 	temperature_driver->lastValue = rand() % (35 + 1 - 10) + 10;
 	xEventGroupSetBits(temperature_driver->event_group_handle_new_data, TEMPERATURE_BIT_1);
-	taskYIELD();
 	return TEMPERATURE_DRIVER_OK;
 }
 
-void temperatureDriver_destroy(TemperatureDriver_t self)
+void temperatureDriver_destroy(TemperatureDriver_t* self)
 {
-	if (self == NULL) return;
-	vTaskDelete(self->task_handle);
-	vPortFree(self);
-	self = NULL;
+	if (self == NULL || *self == NULL) return;
+	vTaskDelete((*self)->task_handle);
+	vPortFree(*self);
+	*self = NULL;
 }
 
 uint16_t temperatureDriver_getMeasure(TemperatureDriver_t temperature_driver)

@@ -155,7 +155,7 @@
     <ClCompile Include="..\..\freertos\FreeRTOS\Source\timers.c" />
     <ClCompile Include="AppController.c" />
     <ClCompile Include="co2driver.c" />
-    <ClCompile Include="lora_driver.c" />
+    <ClCompile Include="loraDriver.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="start.c" />
     <ClCompile Include="temperatureDriver.c" />
@@ -184,7 +184,7 @@
     <ClInclude Include="AppController.h" />
     <ClInclude Include="co2driver.h" />
     <ClInclude Include="constants.h" />
-    <ClInclude Include="lora_driver.h" />
+    <ClInclude Include="loraDriver.h" />
     <ClInclude Include="temperatureDriver.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

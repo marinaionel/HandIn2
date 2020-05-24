@@ -5,7 +5,7 @@
 
 #include <projdefs.h>
 
-#include "lora_driver.h"
+#include "loraDriver.h"
 
 #define LORA_DRIVER_TASK_PRIORITY (configMAX_PRIORITIES-3)
 #define LORA_DRIVER_TAG "LORA DRIVER"
