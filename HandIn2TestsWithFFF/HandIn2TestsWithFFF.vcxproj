@@ -40,7 +40,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="..\HandIn2\co2driver.c" />
-    <ClCompile Include="test.cpp" />
+    <ClCompile Include="test-co2-driver.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

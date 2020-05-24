@@ -11,7 +11,7 @@
 #include "co2driver.h"
 
 #define CO2_TASK_PRIORITY (configMAX_PRIORITIES-4)
-#define CO2_DRIVER_TASK_NAME "Co2 Driver Task"
+#define CO2_DRIVER_TASK_NAME "CO2"
 #define CO2_DRIVER_TAG "CO2 DRIVER"
 
 typedef struct Co2Driver {
@@ -23,7 +23,7 @@ typedef struct Co2Driver {
 	TaskHandle_t task_handle;
 }Co2Driver;
 
-static void inLoop(Co2Driver_t pDriver)
+void co2Driver_inLoop(Co2Driver_t pDriver)
 {
 	EventBits_t uxBits = xEventGroupWaitBits(
 		pDriver->event_group_handle_measure,
@@ -38,11 +38,10 @@ static void inLoop(Co2Driver_t pDriver)
 }
 
 void co2sensor_Task(void* pvParameters) {
-	// avoid compiler warning about unused parameters
 	Co2Driver_t _passedDriver = (Co2Driver_t)pvParameters;
 
 	for (;;) {
-		inLoop(_passedDriver);
+		co2Driver_inLoop(_passedDriver);
 	}
 	vTaskDelete(_passedDriver->task_handle);
 }
@@ -61,13 +60,13 @@ Co2Driver_t co2Driver_create(uint8_t pPortNo, EventGroupHandle_t measure_event_g
 
 	//Create task
 	xTaskCreate(
-		co2sensor_Task						/* Task function. */
-		, (const portCHAR*)"CO2"			/* String with name of task. */
-		, configMINIMAL_STACK_SIZE			/* Stack size in words. */
-		, (void*)_co2driver					/* Parameter passed as input of the task */
-		, CO2_TASK_PRIORITY		/* Priority of the task. */
-		, &(_co2driver->task_handle));		/* Task handle. */
-	
+		co2sensor_Task									/* Task function. */
+		, (const portCHAR*)CO2_DRIVER_TASK_NAME			/* String with name of task. */
+		, configMINIMAL_STACK_SIZE						/* Stack size in words. */
+		, (void*)_co2driver								/* Parameter passed as input of the task */
+		, CO2_TASK_PRIORITY					/* Priority of the task. */
+		, &_co2driver->task_handle);					/* Task handle. */
+
 	return _co2driver;
 }
 
@@ -82,22 +81,22 @@ co2_return_code_enum co2Driver_takeMeasuring(Co2Driver_t co2driver)
 	}
 
 	//rand() % (max_number + 1 - minimum_number) + minimum_number
-	co2driver->lastMeasurement = rand() % (400 + 1 - 100) + 100;
+	co2driver->lastMeasurement = rand() % (5000 + 1 - 0) + 0;
 
 	xEventGroupSetBits(co2driver->event_group_handle_new_data, CO2_BIT_0);
 	return CO2_DRIVER_OK;
 }
 
-uint16_t co2Driver_getCo2Ppm(Co2Driver_t co2driver)
+int16_t co2Driver_getCo2Ppm(Co2Driver_t co2driver)
 {
 	if (co2driver == NULL) return -1;
 	return co2driver->lastMeasurement;
 }
 
-void co2Driver_destroy(Co2Driver_t self)
+void co2Driver_destroy(Co2Driver_t* self)
 {
-	if (self == NULL) return;
-	vTaskDelete(self->task_handle);
-	vPortFree(self);
-	self = NULL;
+	if (self == NULL || *self == NULL) return;
+	vTaskDelete((*self)->task_handle);
+	vPortFree(*self);
+	*self = NULL;
 }

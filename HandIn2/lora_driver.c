@@ -22,7 +22,7 @@ static void loraDriverTask(void* pvParameters)
 {
 	static LoraDriver_t _ld1 = NULL;
 	_ld1 = (LoraDriver_t)pvParameters;
-	lora_payload_t _lorapayload = NULL;
+	lora_payload_t _lorapayload;
 	for (;;)
 	{
 		if (_ld1->xQueue != NULL)
@@ -31,18 +31,7 @@ static void loraDriverTask(void* pvParameters)
 				&_lorapayload,
 				portMAX_DELAY) == pdPASS)
 			{
-				if (_lorapayload != NULL)
-				{
-					loraDriver_sent_upload_message(_lorapayload, _ld1);
-				}
-				else
-				{
-					if (_ld1->xPrintfSemaphore != NULL) {
-						xSemaphoreTake(_ld1->xPrintfSemaphore, portMAX_DELAY);
-						printf("%s :: NULL lora payload", LORA_DRIVER_TAG);
-						xSemaphoreGive(_ld1->xPrintfSemaphore);
-					}
-				}
+				loraDriver_sent_upload_message(_lorapayload, _ld1);
 			}
 		}
 	}
@@ -76,17 +65,16 @@ void loraDriver_sent_upload_message(lora_payload_t p_lora_payload, LoraDriver_t 
 		if (lora_driver->xPrintfSemaphore != NULL) {
 			xSemaphoreTake(lora_driver->xPrintfSemaphore, portMAX_DELAY);
 			printf("%s :: SENDING DATA PACKET :: ", LORA_DRIVER_TAG);
-			printf("data packet{ portNo %d, len %d, bytes ", p_lora_payload->port_no, p_lora_payload->len);
+			printf("data packet{ portNo %d, len %d, bytes ", p_lora_payload.port_no, p_lora_payload.len);
 
-			for (int i = 0; i < p_lora_payload->len; i++)
+			for (int i = 0; i < p_lora_payload.len; i++)
 			{
 				if (i > 0) printf(":");
-				printf("%02X", p_lora_payload->bytes[i]);
+				printf("%02X", p_lora_payload.bytes[i]);
 			}
 			printf(" }\n");
 
 			xSemaphoreGive(lora_driver->xPrintfSemaphore);
-			vPortFree(p_lora_payload);
 		}
 	}
 }
