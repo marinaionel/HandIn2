@@ -9,7 +9,6 @@
 
 #define LORA_DRIVER_TASK_PRIORITY (configMAX_PRIORITIES-3)
 #define LORA_DRIVER_TAG "LORA DRIVER"
-#define LORA_DRIVER_TASK_NAME "Lora Driver Task"
 
 typedef struct LoraDriver
 {
@@ -18,22 +17,27 @@ typedef struct LoraDriver
 	QueueHandle_t xQueue;
 }LoraDriver;
 
-static void loraDriverTask(void* pvParameters)
+void loraDriver_inLoop(LoraDriver_t self, lora_payload_t lora_payload)
+{
+	if (self->xQueue != NULL)
+	{
+		if (xQueueReceive(self->xQueue,
+			&lora_payload,
+			portMAX_DELAY) == pdPASS)
+		{
+			loraDriver_sent_upload_message(lora_payload, self);
+		}
+	}
+}
+
+void loraDriver_Task(void* pvParameters)
 {
 	static LoraDriver_t _ld1 = NULL;
 	_ld1 = (LoraDriver_t)pvParameters;
-	lora_payload_t _lorapayload;
+	static lora_payload_t _lorapayload;
 	for (;;)
 	{
-		if (_ld1->xQueue != NULL)
-		{
-			if (xQueueReceive(_ld1->xQueue,
-				&_lorapayload,
-				portMAX_DELAY) == pdPASS)
-			{
-				loraDriver_sent_upload_message(_lorapayload, _ld1);
-			}
-		}
+		loraDriver_inLoop(_ld1, _lorapayload);
 	}
 	vTaskDelete(_ld1->task_handle);
 }
@@ -49,12 +53,12 @@ LoraDriver_t lora_create(QueueHandle_t p_queue_handle, SemaphoreHandle_t pPrintf
 
 	//Create task
 	xTaskCreate(
-		loraDriverTask								/* Task function. */
-		, (const portCHAR*)LORA_DRIVER_TASK_NAME	/* String with name of task. */
+		loraDriver_Task								/* Task function. */
+		, (const portCHAR*)"Lora Driver Task"	/* String with name of task. */
 		, configMINIMAL_STACK_SIZE					/* Stack size in words. */
 		, (void*)_ld								/* Parameter passed as input of the task */
 		, LORA_DRIVER_TASK_PRIORITY		/* Priority of the task. */
-		, &(_ld->task_handle));						/* Task handle. */
+		, &_ld->task_handle);						/* Task handle. */
 
 	return _ld;
 }
@@ -79,10 +83,10 @@ void loraDriver_sent_upload_message(lora_payload_t p_lora_payload, LoraDriver_t 
 	}
 }
 
-void loraDriver_destroy(LoraDriver_t self)
+void loraDriver_destroy(LoraDriver_t* self)
 {
-	if (self == NULL) return;
-	vTaskDelete(self->task_handle);
-	vPortFree(self);
-	self = NULL;
+	if (self == NULL || *self == NULL) return;
+	vTaskDelete((*self)->task_handle);
+	vPortFree(*self);
+	*self = NULL;
 }

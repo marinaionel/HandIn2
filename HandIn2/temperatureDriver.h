@@ -13,8 +13,10 @@ typedef enum TemperatureDriverReturnCodes {
 } TemperatureDriverReturnCode_t;
 
 typedef struct TemperatureDriver* TemperatureDriver_t;
+
 TemperatureDriver_t temperatureDriver_create(uint8_t pPortNo, EventGroupHandle_t measure_event_group_handle, EventGroupHandle_t new_data_event_group_handle, SemaphoreHandle_t pPrintfSemaphore);
-uint16_t temperatureDriver_getMeasure(TemperatureDriver_t temperature_driver);
+int16_t temperatureDriver_getMeasure(TemperatureDriver_t temperature_driver);
 TemperatureDriverReturnCode_t temperatureDriver_takeMeasuring(TemperatureDriver_t temperature_driver);
 void temperatureDriver_destroy(TemperatureDriver_t* self);
 void temperatureSensor_Task(void* pvParameters);
+void temperatureDriver_inLoop(TemperatureDriver_t pDriver);

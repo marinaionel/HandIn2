@@ -16,14 +16,14 @@
 typedef struct TemperatureDriver
 {
 	uint8_t portNo;
-	uint16_t lastValue;
+	int16_t lastValue;
 	SemaphoreHandle_t xPrintfSemaphore;
 	EventGroupHandle_t event_group_handle_measure;
 	EventGroupHandle_t event_group_handle_new_data;
 	TaskHandle_t task_handle;
 }TemperatureDriver;
 
-static void inLoop(TemperatureDriver_t pDriver)
+void temperatureDriver_inLoop(TemperatureDriver_t pDriver)
 {
 	EventBits_t uxBits = xEventGroupWaitBits(
 		pDriver->event_group_handle_measure,
@@ -50,7 +50,7 @@ void temperatureSensor_Task(void* pvParameters) {
 	TemperatureDriver_t _passedDriver = (TemperatureDriver_t)pvParameters;
 
 	for (;;) {
-		inLoop(_passedDriver);
+		temperatureDriver_inLoop(_passedDriver);
 	}
 	vTaskDelete(_passedDriver->task_handle);
 }
@@ -89,7 +89,7 @@ TemperatureDriverReturnCode_t temperatureDriver_takeMeasuring(TemperatureDriver_
 	}
 
 	//rand() % (max_number + 1 - minimum_number) + minimum_number
-	temperature_driver->lastValue = rand() % (35 + 1 - 10) + 10;
+	temperature_driver->lastValue = rand() % (100 + 1 - 0) + 0;
 	xEventGroupSetBits(temperature_driver->event_group_handle_new_data, TEMPERATURE_BIT_1);
 	return TEMPERATURE_DRIVER_OK;
 }
@@ -102,7 +102,7 @@ void temperatureDriver_destroy(TemperatureDriver_t* self)
 	*self = NULL;
 }
 
-uint16_t temperatureDriver_getMeasure(TemperatureDriver_t temperature_driver)
+int16_t temperatureDriver_getMeasure(TemperatureDriver_t temperature_driver)
 {
 	if (temperature_driver == NULL) return -1;
 	return temperature_driver->lastValue;
