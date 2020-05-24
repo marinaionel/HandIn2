@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
 
 #include <FreeRTOS.h>
 #include <event_groups.h>
@@ -88,8 +89,10 @@ TemperatureDriverReturnCode_t temperatureDriver_takeMeasuring(TemperatureDriver_
 		xSemaphoreGive(temperature_driver->xPrintfSemaphore);
 	}
 
+	srand(time(0));
 	//rand() % (max_number + 1 - minimum_number) + minimum_number
 	temperature_driver->lastValue = rand() % (100 + 1 - 0) + 0;
+	
 	xEventGroupSetBits(temperature_driver->event_group_handle_new_data, TEMPERATURE_BIT_1);
 	return TEMPERATURE_DRIVER_OK;
 }

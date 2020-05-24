@@ -2,7 +2,7 @@
 
 extern "C" {
 #include <FreeRTOS.h>
-#include "../HandIn2/lora_driver.h"
+#include "../HandIn2/loraDriver.h"
 }
 
 namespace drivers

@@ -1,3 +1,5 @@
+#include <time.h>
+
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -80,6 +82,7 @@ co2_return_code_enum co2Driver_takeMeasuring(Co2Driver_t co2driver)
 		xSemaphoreGive(co2driver->xPrintfSemaphore);
 	}
 
+	srand(time(0));
 	//rand() % (max_number + 1 - minimum_number) + minimum_number
 	co2driver->lastMeasurement = rand() % (5000 + 1 - 0) + 0;
 

@@ -2,6 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="test-app-controller.cpp" />
@@ -76,6 +77,12 @@
     </ClInclude>
     <ClInclude Include="mock-co2-driver.hpp">
       <Filter>mocks\co2-driver</Filter>
+    </ClInclude>
+    <ClInclude Include="..\HandIn2\co2driver.h">
+      <Filter>app-controller</Filter>
+    </ClInclude>
+    <ClInclude Include="..\HandIn2\temperatureDriver.h">
+      <Filter>app-controller</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -7,12 +7,12 @@ TemperatureDriver_t temperatureDriver_create(uint8_t pPortNo, EventGroupHandle_t
 	return temperature_driver_mock.temperatureDriver_create(pPortNo, measure_event_group_handle, new_data_event_group_handle, pPrintfSemaphore);
 }
 
-uint16_t temperatureDriver_getMeasure(TemperatureDriver_t temperature_driver)
+int16_t temperatureDriver_getMeasure(TemperatureDriver_t temperature_driver)
 {
 	return temperature_driver_mock.temperatureDriver_getMeasure(temperature_driver);
 }
 
-void temperatureDriver_destroy(TemperatureDriver_t self)
+void temperatureDriver_destroy(TemperatureDriver_t* self)
 {
 	temperature_driver_mock.temperatureDriver_destroy(self);
 }
