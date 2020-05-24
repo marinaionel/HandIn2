@@ -74,6 +74,9 @@
     <ClCompile Include="loraDriver.c">
       <Filter>Source Files\drivers</Filter>
     </ClCompile>
+    <ClCompile Include="packageHandler.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="co2driver.h">
@@ -150,6 +153,9 @@
     </ClInclude>
     <ClInclude Include="loraDriver.h">
       <Filter>Header Files\drivers</Filter>
+    </ClInclude>
+    <ClInclude Include="packageHandler.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

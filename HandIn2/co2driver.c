@@ -78,7 +78,7 @@ co2_return_code_enum co2Driver_takeMeasuring(Co2Driver_t co2driver)
 
 	if (co2driver->xPrintfSemaphore != NULL) {
 		xSemaphoreTake(co2driver->xPrintfSemaphore, portMAX_DELAY);
-		printf("CO2 DRIVER :: Taking co2 measurement...\n");
+		printf("CO2 DRIVER :: portNo %d :: Taking co2 measurement...\n", co2driver->portNo);
 		xSemaphoreGive(co2driver->xPrintfSemaphore);
 	}
 

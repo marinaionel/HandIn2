@@ -1,13 +1,8 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=8070c746_002D124f_002D4ea5_002D8a7b_002Dd9940dd34eed/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="TestCreate_callsxTaskCreate" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;Or&gt;&#xD;
-    &lt;ProjectFile&gt;20B34981-5C03-4EF8-B9E8-313BC620E645/f:tests.cpp&lt;/ProjectFile&gt;&#xD;
-    &lt;TestAncestor&gt;&#xD;
-      &lt;TestId&gt;GTest::9D2B1B86-B19A-4ADE-8C3E-9E2C53EB619D::.NETFramework,Version=v4.0::AppControllerTest.TestCreateCallsCreateQueue&lt;/TestId&gt;&#xD;
-      &lt;TestId&gt;GTest::9D2B1B86-B19A-4ADE-8C3E-9E2C53EB619D::.NETFramework,Version=v4.0::AppControllerTest.TestCreate_CallsCreateQueue&lt;/TestId&gt;&#xD;
-    &lt;/TestAncestor&gt;&#xD;
+  &lt;Not&gt;&#xD;
     &lt;Project Location="C:\Users\Marina Ionel\OneDrive - ViaUC\semester 4\ESW\HandIn2\HandIn2\HandIn2TestsGmock" Presentation="&amp;lt;HandIn2Tests&amp;gt;" /&gt;&#xD;
-  &lt;/Or&gt;&#xD;
+  &lt;/Not&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
 	
 	

@@ -40,6 +40,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="..\HandIn2\co2driver.c" />
+    <ClCompile Include="..\HandIn2\packageHandler.c" />
     <ClCompile Include="..\HandIn2\temperatureDriver.c" />
     <ClCompile Include="tests.cpp" />
   </ItemGroup>
@@ -53,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\HandIn2\co2driver.h" />
+    <ClInclude Include="..\HandIn2\packageHandler.h" />
     <ClInclude Include="..\HandIn2\temperatureDriver.h" />
     <ClInclude Include="setup-fff.hpp" />
   </ItemGroup>

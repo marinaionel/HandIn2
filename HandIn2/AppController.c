@@ -11,6 +11,7 @@
 #include "co2driver.h"
 #include "temperatureDriver.h"
 #include "constants.h"
+#include "packageHandler.h"
 
 #define APP_CONTROLLER_TASK_PRIORITY (configMAX_PRIORITIES-4)
 #define APP_CONTROLLER_TAG "APP CONTROLLER"
@@ -31,16 +32,6 @@ typedef struct AppController
 	EventGroupHandle_t event_group_handle_new_data;
 	QueueHandle_t queue;
 }AppController;
-
-lora_payload_t appController_assemble_data_packet(int16_t co2, int16_t temperature)
-{
-	lora_payload_t _payload = { .len = 4, .bytes = {0}, .port_no = 1 };
-	_payload.bytes[0] = co2 >> 8;
-	_payload.bytes[1] = co2 & 0xFF;
-	_payload.bytes[2] = temperature >> 8;
-	_payload.bytes[3] = temperature & 0xFF;
-	return _payload;
-}
 
 void appController_inLoop(AppController_t app_controller)
 {
@@ -65,7 +56,10 @@ void appController_inLoop(AppController_t app_controller)
 		xSemaphoreGive(app_controller->xPrintfSemaphore);
 	}
 
-	lora_payload_t _lora_payload = appController_assemble_data_packet(_co2Result, _temperatureResult);
+	packageHandler_setCo2(_co2Result);
+	packageHandler_setTemperature(_temperatureResult);
+
+	lora_payload_t _lora_payload = packageHandler_getLoraPayload();
 
 	//queue send
 	xQueueSend(app_controller->queue, //queue handler
@@ -82,6 +76,7 @@ void appController_Task(void* pvParameters)
 	{
 		appController_inLoop(_ac);
 	}
+	vTaskDelete(_ac->task_handle);
 }
 
 AppController_t appController_create(uint8_t co2PortNo, uint8_t temperaturePortNo)
@@ -139,6 +134,7 @@ void appController_destroy(AppController_t* self)
 
 	co2Driver_destroy(&(*self)->co2driver);
 	temperatureDriver_destroy(&(*self)->temperature_driver);
+	loraDriver_destroy(&(*self)->lora_driver);
 
 	vQueueDelete((*self)->queue);
 	vEventGroupDelete((*self)->event_group_handle_measure);

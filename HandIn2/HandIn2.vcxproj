@@ -157,6 +157,7 @@
     <ClCompile Include="co2driver.c" />
     <ClCompile Include="loraDriver.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="packageHandler.c" />
     <ClCompile Include="start.c" />
     <ClCompile Include="temperatureDriver.c" />
   </ItemGroup>
@@ -185,6 +186,7 @@
     <ClInclude Include="co2driver.h" />
     <ClInclude Include="constants.h" />
     <ClInclude Include="loraDriver.h" />
+    <ClInclude Include="packageHandler.h" />
     <ClInclude Include="temperatureDriver.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -2,6 +2,7 @@
 
 extern "C" {
 #include "../HandIn2/constants.h"
+#include "../HandIn2/packageHandler.h"
 }
 
 //-------------------------------------TESTS CO2 DRIVER-------------------------------------------------------------------
@@ -445,3 +446,49 @@ TEST_F(TemperatureDriverTest1, TestInLoop_calls_take_measuring_after_a_valid_res
 																		//because of low probability to generate
 																		//the same number twice in a row
 }
+
+//-------------------------------------TESTS PACKAGE HANDLER--------------------------------------------------------------
+TEST(PackageHandlerTest, testGetLoraPayload_canCallWithoutCrashing)
+{
+	//act
+	packageHandler_getLoraPayload();
+}
+
+TEST(PackageHandlerTest, testGetLoraPayload_converts_to_bytes_properly)
+{
+	//arrange
+	int16_t t = 30;
+	int16_t c = 1087;
+	packageHandler_setTemperature(t);
+	packageHandler_setCo2(c);
+	//act
+	const auto _t = packageHandler_getLoraPayload();
+	//assert
+	EXPECT_EQ(c >> 8, _t.bytes[0]);
+	EXPECT_EQ(c & 0xFF, _t.bytes[1]);
+	EXPECT_EQ(t >> 8, _t.bytes[2]);
+	EXPECT_EQ(t & 0xFF, _t.bytes[3]);
+}
+
+int main(int argc, char** argv) {
+	testing::InitGoogleTest(&argc, argv);
+	return RUN_ALL_TESTS();
+}
+
+//-------------------------------------TESTS LORA DRIVER--------------------------------------------------------------
+
+// TEST_F(LoraDriverTest, TestCreate_calls_create_without_crashing)
+// {
+// 	//act
+// 	lora_create(NULL, NULL);
+// }
+//
+// TEST_F(LoraDriverTest, TestCreate_calls_pv_port_malloc_with_argument_sizeof_lora_driver)
+// {
+// 	//act
+// 	lora_create( NULL, NULL);
+// 	EXPECT_EQ(1u, pvPortMalloc_fake.call_count);
+// 	//assert
+// 	printf("%d",pvPortMalloc_fake.arg0_val);
+// 	EXPECT_EQ(x, pvPortMalloc_fake.arg0_val);
+// }

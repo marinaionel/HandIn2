@@ -20,7 +20,8 @@ FAKE_VALUE_FUNC5(EventBits_t, xEventGroupWaitBits, EventGroupHandle_t, EventBits
 FAKE_VALUE_FUNC2(EventBits_t, xEventGroupSetBits, EventGroupHandle_t, EventBits_t)
 FAKE_VOID_FUNC1(vTaskDelete, TaskHandle_t)
 FAKE_VOID_FUNC1(vPortFree, void*)
-// FAKE_VOID_FUNC3(BaseType_t, xQueueReceive, QueueHandle_t, void*, TickType_t)
+// FAKE_VALUE_FUNC3(BaseType_t, xQueueReceive, QueueHandle_t, void*, TickType_t)
+// FAKE_VALUE_FUNC3(BaseType_t, xQueueSend, QueueHandle_t, const void*, TickType_t)
 
 class Co2DriverTest : public::testing::Test
 {
@@ -58,7 +59,7 @@ protected:
 		FFF_RESET_HISTORY();
 
 		pvPortMalloc_fake.return_val = malloc(20);
-		co2driver = co2Driver_create(1, nullptr, nullptr, nullptr);
+		co2driver = co2Driver_create(1, NULL, NULL, NULL);
 	}
 	void TearDown() override
 	{
@@ -110,46 +111,47 @@ protected:
 	}
 };
 
-class LoraDriverTest : public::testing::Test
-{
-protected:
-	void SetUp() override
-	{
-		RESET_FAKE(pvPortMalloc);
-		RESET_FAKE(xTaskCreate);
-		RESET_FAKE(xQueueSemaphoreTake);
-		RESET_FAKE(xQueueGenericSend);
-		RESET_FAKE(xEventGroupWaitBits);
-		RESET_FAKE(xEventGroupSetBits);
-		RESET_FAKE(vTaskDelete);
-		RESET_FAKE(vPortFree);
-		FFF_RESET_HISTORY();
-	}
-	void TearDown() override {}
-};
-
-class LoraDriverTest1 : public::testing::Test
-{
-public:
-	LoraDriver_t lora_driver;
-protected:
-	void SetUp() override
-	{
-		RESET_FAKE(pvPortMalloc);
-		RESET_FAKE(xTaskCreate);
-		RESET_FAKE(xQueueSemaphoreTake);
-		RESET_FAKE(xQueueGenericSend);
-		RESET_FAKE(xEventGroupWaitBits);
-		RESET_FAKE(xEventGroupSetBits);
-		RESET_FAKE(vTaskDelete);
-		RESET_FAKE(vPortFree);
-		FFF_RESET_HISTORY();
-
-		pvPortMalloc_fake.return_val = malloc(20);
-		lora_driver = lora_create(NULL, NULL);
-	}
-	void TearDown() override
-	{
-		loraDriver_destroy(&lora_driver);
-	}
-};
+// class LoraDriverTest : public::testing::Test
+// {
+// protected:
+// 	void SetUp() override
+// 	{
+// 		RESET_FAKE(pvPortMalloc);
+// 		RESET_FAKE(xTaskCreate);
+// 		RESET_FAKE(xQueueSemaphoreTake);
+// 		RESET_FAKE(xQueueGenericSend);
+// 		RESET_FAKE(xEventGroupWaitBits);
+// 		RESET_FAKE(xEventGroupSetBits);
+// 		RESET_FAKE(vTaskDelete);
+// 		RESET_FAKE(vPortFree);
+// 		RESET_FAKE(xQueueReceive);
+// 		FFF_RESET_HISTORY();
+// 	}
+// 	void TearDown() override {}
+// };
+//
+// class LoraDriverTest1 : public::testing::Test
+// {
+// public:
+// 	LoraDriver_t lora_driver;
+// protected:
+// 	void SetUp() override
+// 	{
+// 		RESET_FAKE(pvPortMalloc);
+// 		RESET_FAKE(xTaskCreate);
+// 		RESET_FAKE(xQueueSemaphoreTake);
+// 		RESET_FAKE(xQueueGenericSend);
+// 		RESET_FAKE(xEventGroupWaitBits);
+// 		RESET_FAKE(xEventGroupSetBits);
+// 		RESET_FAKE(vTaskDelete);
+// 		RESET_FAKE(vPortFree);
+// 		FFF_RESET_HISTORY();
+//
+// 		pvPortMalloc_fake.return_val = malloc(20);
+// 		lora_driver = lora_create(NULL, NULL);
+// 	}
+// 	void TearDown() override
+// 	{
+// 		loraDriver_destroy(&lora_driver);
+// 	}
+// };

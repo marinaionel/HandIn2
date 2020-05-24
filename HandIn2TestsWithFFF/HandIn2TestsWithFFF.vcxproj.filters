@@ -8,6 +8,9 @@
       <Filter>HandIn2</Filter>
     </ClCompile>
     <ClCompile Include="tests.cpp" />
+    <ClCompile Include="..\HandIn2\packageHandler.c">
+      <Filter>HandIn2</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -22,6 +25,9 @@
       <Filter>HandIn2</Filter>
     </ClInclude>
     <ClInclude Include="..\HandIn2\temperatureDriver.h">
+      <Filter>HandIn2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\HandIn2\packageHandler.h">
       <Filter>HandIn2</Filter>
     </ClInclude>
   </ItemGroup>

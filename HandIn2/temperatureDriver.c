@@ -32,6 +32,7 @@ void temperatureDriver_inLoop(TemperatureDriver_t pDriver)
 		pdTRUE,
 		pdTRUE,
 		portMAX_DELAY);
+	
 	if ((uxBits & TEMPERATURE_BIT_1) == TEMPERATURE_BIT_1)
 	{
 		TemperatureDriverReturnCode_t result = temperatureDriver_takeMeasuring(pDriver);
@@ -59,7 +60,7 @@ void temperatureSensor_Task(void* pvParameters) {
 TemperatureDriver_t temperatureDriver_create(uint8_t pPortNo, EventGroupHandle_t measure_event_group_handle, EventGroupHandle_t new_data_event_group_handle, SemaphoreHandle_t pPrintfSemaphore)
 {
 	TemperatureDriver_t _t = pvPortMalloc(1 * sizeof(TemperatureDriver));
-	if (_t == NULL)return NULL;
+	if (_t == NULL) return NULL;
 	_t->portNo = pPortNo;
 	_t->lastValue = 0;
 	_t->event_group_handle_new_data = new_data_event_group_handle;
@@ -72,9 +73,9 @@ TemperatureDriver_t temperatureDriver_create(uint8_t pPortNo, EventGroupHandle_t
 		temperatureSensor_Task						/* Task function. */
 		, (const portCHAR*)"Temperature Task"		/* String with name of task. */
 		, configMINIMAL_STACK_SIZE					/* Stack size in words. */
-		, (void*)_t								/* Parameter passed as input of the task */
+		, (void*)_t									/* Parameter passed as input of the task */
 		, TEMPERATURE_TASK_PRIORITY		/* Priority of the task. */
-		, &_t->task_handle);					/* Task handle. */
+		, &_t->task_handle);						/* Task handle. */
 
 	return _t;
 }
@@ -85,14 +86,14 @@ TemperatureDriverReturnCode_t temperatureDriver_takeMeasuring(TemperatureDriver_
 
 	if (temperature_driver->xPrintfSemaphore != NULL) {
 		xSemaphoreTake(temperature_driver->xPrintfSemaphore, portMAX_DELAY);
-		printf("TEMPERATURE DRIVER :: Taking temperature measurement...\n");
+		printf("TEMPERATURE DRIVER :: portNo %d :: Taking temperature measurement...\n", temperature_driver->portNo);
 		xSemaphoreGive(temperature_driver->xPrintfSemaphore);
 	}
 
 	srand(time(0));
 	//rand() % (max_number + 1 - minimum_number) + minimum_number
 	temperature_driver->lastValue = rand() % (100 + 1 - 0) + 0;
-	
+
 	xEventGroupSetBits(temperature_driver->event_group_handle_new_data, TEMPERATURE_BIT_1);
 	return TEMPERATURE_DRIVER_OK;
 }
@@ -109,13 +110,4 @@ int16_t temperatureDriver_getMeasure(TemperatureDriver_t temperature_driver)
 {
 	if (temperature_driver == NULL) return -1;
 	return temperature_driver->lastValue;
-}
-
-uint8_t temperatureDriver_getPortNo(TemperatureDriver_t temperature_driver)
-{
-	if (temperature_driver == NULL)
-	{
-		return -1;
-	}
-	return temperature_driver->portNo;
 }
